@@ -131,7 +131,7 @@ $$
 
 ### Diagrama biológico
 
-![Diagrama biológico del modelo musculoesquelético](MuscesqBiorender.jpg)
+![Diagrama biológico del modelo musculoesquelético](MuscoesqBiorender.jpg)
 
 *Figura elaborada en BioRender. A la derecha se muestra el modelo mecánico equivalente; a la izquierda se ubica cada elemento del modelo en el músculo y su tendón.*
 
