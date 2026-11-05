@@ -1,4 +1,6 @@
-# Práctica Tres — Modelado y control del sistema musculoesquelético
+Practica 3: Modelado y control del sistema muscoesqueletico
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=Nefga/MSFP3)
+# Práctica Tres: Modelado y control del sistema musculoesquelético
 
 Repositorio académico de la asignatura **Modelado de Sistemas Fisiológicos**, correspondiente al programa de **Ingeniería Biomédica** del Tecnológico Nacional de México / Instituto Tecnológico de Tijuana. Esta práctica integra modelado mecánico, analogías electromecánicas, superposición de circuitos, análisis temporal y de estabilidad, diseño de controladores PID y simulación computacional *in silico*.
 
