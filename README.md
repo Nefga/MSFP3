@@ -1,10 +1,8 @@
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=USUARIO/REPOSITORIO)
-
-# MSFP3: Modelado y control del sistema musculoesquelético
+# Práctica Tres — Modelado y control del sistema musculoesquelético
 
 Repositorio académico de la asignatura **Modelado de Sistemas Fisiológicos**, correspondiente al programa de **Ingeniería Biomédica** del Tecnológico Nacional de México / Instituto Tecnológico de Tijuana. Esta práctica integra modelado mecánico, analogías electromecánicas, superposición de circuitos, análisis temporal y de estabilidad, diseño de controladores PID y simulación computacional *in silico*.
 
-El caso de estudio representa el **sistema musculoesquelético** mediante un modelo viscoelástico de primer orden (elemento contráctil, amortiguador viscoso, tendón y estructuras elásticas). Se busca comparar la respuesta de un individuo sano (**control**) con la de un caso simulado de **atrofia muscular** (**caso**), tanto en lazo abierto como en lazo cerrado con un controlador PID que reduce la diferencia entre ambas respuestas.
+El caso de estudio representa el **sistema musculoesquelético** mediante un modelo viscoelástico de primer orden (elemento contráctil, amortiguador viscoso, tendón y estructuras elásticas). Se compara la respuesta de un individuo sano (**control**) con la de un caso simulado de **atrofia muscular** (**caso**), tanto en lazo abierto como en lazo cerrado con un controlador PID que reduce la diferencia entre ambas respuestas.
 
 **Docente:** Dr. Paul Antonio Valle Trujillo  
 **Correo:** paul.valle@tectijuana.edu.mx  
@@ -29,16 +27,15 @@ El caso de estudio representa el **sistema musculoesquelético** mediante un mod
 5. [Formulación matemática](#modelo)
 6. [Análisis temporal y de estabilidad](#analisis)
 7. [Señales de entrada y condiciones de simulación](#senales)
-8. [Implementación en MATLAB, Simulink y Simscape](#matlab)
+8. [Implementación en MATLAB y Simulink](#matlab)
 9. [Control en lazo cerrado y sintonización PID](#pid)
-10. [Reproducción en Python](#python)
-11. [Resultados y verificación cruzada](#resultados)
-12. [Flujo de trabajo](#flujo)
-13. [Actividades del estudiante](#actividades)
-14. [Estructura del repositorio](#estructura)
-15. [Requisitos](#requisitos)
-16. [Reproducibilidad y entregables](#reproducibilidad)
-17. [Referencias](#referencias)
+10. [Resultados y verificación cruzada](#resultados)
+11. [Flujo de trabajo](#flujo)
+12. [Actividades del estudiante](#actividades)
+13. [Estructura del repositorio](#estructura)
+14. [Requisitos](#requisitos)
+15. [Reproducibilidad y entregables](#reproducibilidad)
+16. [Referencias](#referencias)
 
 ---
 
@@ -53,11 +50,11 @@ $$
 
 El **caso de atrofia** se representa únicamente incrementando $R$ de $100\,\Omega$ a $10\,\mathrm{k}\Omega$. Esto no modifica la ganancia en estado estacionario, pero vuelve la respuesta 100 veces más lenta: la constante de tiempo pasa de $11\,\mathrm{ms}$ a $1.1\,\mathrm{s}$.
 
-Se estudian el error en estado estacionario y la estabilidad a través del polo de cada modelo. Posteriormente se aplica un pulso de entrada y se contrastan las implementaciones en MATLAB/Simulink (ecuaciones y función de transferencia), un modelo de EDO integrado en MATLAB y, de forma complementaria, Python. Se incorpora un **controlador PID** sobre el modelo del caso, cuya señal de error es la diferencia entre la respuesta del control y la del caso, y cuyas ganancias se sintonizan con la herramienta *Tune* de Simulink.
+Se estudian el error en estado estacionario y la estabilidad a través del polo de cada modelo. Posteriormente se aplica un pulso de entrada y se contrastan la función de transferencia implementada en Simulink y un modelo de EDO integrado en MATLAB. Se incorpora un **controlador PID** sobre el modelo del caso, cuya señal de error es la diferencia entre la respuesta del control y la del caso, y cuyas ganancias se sintonizan con la herramienta *Tune* de Simulink.
 
 La práctica se desarrolla **exclusivamente mediante experimentación *in silico***. La estrategia de control tiene propósitos académicos y de simulación, y no constituye una estrategia terapéutica para el tratamiento de la atrofia muscular.
 
-**Palabras clave:** sistema musculoesquelético; modelo viscoelástico; analogía fuerza–voltaje; superposición; función de transferencia; controlador PID; atrofia muscular; MATLAB; Simulink; Simscape Electrical; Python; simulación *in silico*.
+**Palabras clave:** sistema musculoesquelético; modelo viscoelástico; analogía fuerza–voltaje; superposición; función de transferencia; controlador PID; atrofia muscular; MATLAB; Simulink; simulación *in silico*.
 
 [Volver al contenido](#contenido)
 
@@ -82,9 +79,8 @@ Analizar y controlar el modelo viscoelástico del sistema musculoesquelético me
 - Expresar el modelo como una ecuación diferencial ordinaria de primer orden.
 - Determinar el error en estado estacionario y analizar la estabilidad mediante el polo de cada modelo.
 - Comparar la respuesta del control y del caso y analizar el efecto del incremento de $R$.
-- Simular el modelo con ecuaciones, función de transferencia y componentes de Simscape Electrical.
-- Implementar un controlador PID sobre el caso y sintonizar sus ganancias con *Tune*.
-- Reproducir las respuestas de lazo abierto y lazo cerrado mediante MATLAB y Python.
+- Implementar un controlador PID sobre el caso, sintonizar sus ganancias con *Tune* y obtener la función de transferencia del sistema controlado.
+- Reproducir las respuestas de lazo abierto y lazo cerrado mediante Simulink y MATLAB.
 - Elaborar un diagrama biológico que relacione los elementos del modelo con las estructuras musculares.
 - Documentar la práctica en un repositorio de GitHub.
 
@@ -277,6 +273,16 @@ $$
 
 El denominador es de primer grado debido a que el modelo tiene **un único modo dinámico independiente**, asociado con la constante de tiempo $\tau=R(C_p+C_s)$.
 
+Sustituyendo $\alpha=0.25$, $C_s=10\,\mu\mathrm{F}$ y $C_p=100\,\mu\mathrm{F}$, las funciones de transferencia completas de cada condición son:
+
+$$
+G_{control}(s)=\frac{100\,(10\times10^{-6})\,s+1-0.25}{100\,(110\times10^{-6})\,s+1}=\frac{0.001\,s+0.75}{0.011\,s+1},
+$$
+
+$$
+G_{caso}(s)=\frac{10^{4}\,(10\times10^{-6})\,s+1-0.25}{10^{4}\,(110\times10^{-6})\,s+1}=\frac{0.1\,s+0.75}{1.1\,s+1}.
+$$
+
 ### 4. Representación mediante EDO de primer orden
 
 Separando $G(s)$ en una ganancia directa más un filtro de primer orden:
@@ -304,8 +310,6 @@ Esta es la forma que se integra por el método de Euler en la función `musculoe
 ## Análisis temporal y de estabilidad
 
 ### 1. Control y caso
-
-Sustituyendo $\alpha=0.25$, $C_s=10\,\mu\mathrm{F}$ y $C_p=100\,\mu\mathrm{F}$:
 
 | Característica | Control ($R=100\,\Omega$) | Caso ($R=10\,\mathrm{k}\Omega$) |
 |---|---:|---:|
@@ -377,8 +381,6 @@ Gcaso = tf([R*Cs, 1-alpha], [R*(Cp+Cs), 1]);
 polo_caso = pole(Gcaso)
 ```
 
-Este código es ilustrativo; no sustituye al modelo de Simulink ni al cuaderno de la práctica.
-
 [Volver al contenido](#contenido)
 
 ---
@@ -392,31 +394,30 @@ El intervalo de simulación es $0\le t\le10\,\mathrm{s}$. Se establece un **paso
 |---|---|---|
 | Pulso | Amplitud $1\,\mathrm{V}$, duración $1\,\mathrm{s}$, inicio en $t=1\,\mathrm{s}$ (periodo $10\,\mathrm{s}$, ancho $10\,\%$, retardo $1\,\mathrm{s}$) | Examinar la respuesta ante una perturbación de duración finita |
 
-La misma señal se aplica al control, al caso y al caso con controlador, con las mismas condiciones iniciales nulas, para que las respuestas sean comparables.
+La misma señal se aplica al control, al caso y al caso con controlador, con condiciones iniciales nulas, para que las respuestas sean comparables.
 
 [Volver al contenido](#contenido)
 
 ---
 
 <a id="matlab"></a>
-## Implementación en MATLAB, Simulink y Simscape
+## Implementación en MATLAB y Simulink
 
-Se reproducen tres representaciones equivalentes del sistema para las condiciones control y caso:
+El modelo de Simulink (`MPSFP3NFGA.slx`) contiene los siguientes elementos:
 
-| Implementación | Descripción | Aspecto por verificar |
+| Elemento | Bloque | Descripción |
 |---|---|---|
-| Ecuaciones del sistema, Simulink | Bloques de suma, ganancias, derivación e integración | Consistencia con las ecuaciones de la superposición |
-| Función de transferencia, Simulink | Bloque de planta con $G(s)=\dfrac{RC_ss+1-\alpha}{R(C_p+C_s)s+1}$ | Respuesta entrada–salida de primer orden |
-| Circuito equivalente, Simscape Electrical | Componentes eléctricos $R$, $C_s$, $C_p$ y fuentes | Concordancia con las representaciones matemáticas |
+| Entrada | `Discrete Pulse Generator` | Pulso de $1\,\mathrm{V}$: periodo $10\,\mathrm{s}$, ancho $10\,\%$, retardo $1\,\mathrm{s}$ |
+| Control | Subsistema `Control` | Función de transferencia $G_{control}(s)$ con $R=100\,\Omega$ |
+| Caso en lazo abierto | Función de transferencia en `Sistema:Normotenso1` | Función de transferencia $G_{caso}(s)$ con $R=10\,\mathrm{k}\Omega$ |
+| Caso en lazo cerrado | Función de transferencia $G_{caso}(s)$, `PID Controller` y `Sum` | El `Sum` calcula $e(t)=x_{control}(t)-x_{caso}(t)$, el PID genera la señal de control y la planta del caso produce la salida |
+| Registro de señales | `To Workspace` | Variables `F` (entrada), `Fsx` (control), `FsY` (caso en lazo abierto) y `PID` (caso con controlador) |
+
+El numerador y el denominador de cada función de transferencia se escriben con los parámetros del circuito, `[R*Cs, 1-alpha]` y `[R*(Cp+Cs), 1]`.
 
 ### Ejecución desde el cuaderno MATLAB
 
-El cuaderno computacional (`.mlx`) ejecuta el modelo de Simulink (`MPSFP3NFGA.slx`) y recupera en el *Workspace* las señales de:
-
-1. **Entrada:** $F(t)$.
-2. **Control:** $F_s(t)$ del individuo sano.
-3. **Caso en lazo abierto:** $F_s(t)$ de la atrofia, sin controlador.
-4. **Caso con controlador:** salida del sistema con PID.
+El cuaderno (`.mlx`) ejecuta el modelo de Simulink, recupera las señales en el *Workspace* y las grafica con la función `plotsignals`.
 
 #### Datos de la simulación
 
@@ -537,50 +538,62 @@ $$
 K(s)=k_P+\frac{k_I}{s}+k_Ds.
 $$
 
-Para el caso ideal de retroalimentación negativa unitaria, tomando como referencia la salida del control, la respuesta del caso con controlador es
+Con retroalimentación negativa unitaria y tomando como referencia la salida del control, la respuesta del caso con controlador es
 
 $$
-F_{s,caso}^{PID}(s)=\frac{K(s)G_{caso}(s)}{1+K(s)G_{caso}(s)}\,F_{s,control}(s).
+F_{s,caso}^{PID}(s)=\frac{K(s)G_{caso}(s)}{1+K(s)G_{caso}(s)}\,F_{s,control}(s)=T(s)\,F_{s,control}(s).
 $$
-
-En la implementación mediante el bloque **PID Controller** deben revisarse la configuración y el filtrado de la acción derivativa.
 
 ### 2. Sintonización
 
-Se utiliza la opción **Tune** del bloque `PID Controller` de Simulink (forma paralela, tiempo continuo) buscando una respuesta estable y una reducción del error entre la salida del caso y la respuesta de referencia del individuo sano. Las ganancias obtenidas son:
+Se utiliza la opción **Tune** del bloque `PID Controller` de Simulink (forma paralela, tiempo continuo), buscando una respuesta estable y una reducción del error entre la salida del caso y la respuesta de referencia del individuo sano. Las ganancias obtenidas son:
 
 | Ganancia | Valor |
 |---|---:|
 | $k_P$ | $0.021475$ |
-| $k_I$ | $42\,258.7709$ |
+| $k_I$ | $42\,258.77$ |
 | $k_D$ | $0$ |
 | $N$ (filtro derivativo) | $100$ |
 
-Con $k_D=0$ el controlador sintonizado es un **PI**. Estos valores pueden variar con la versión del software y el procedimiento de sintonización; lo importante es conservar la evidencia de la respuesta y de los parámetros utilizados.
+Con $k_D=0$ el controlador es un **PI**, y el filtro derivativo $N$ no interviene:
 
-> **Pendiente:** agregar la captura de la herramienta *Tune* (`controlador_pid.png`) como evidencia de la sintonización.
+$$
+K(s)=0.021475+\frac{42\,258.77}{s}=\frac{0.021475\,s+42\,258.77}{s}.
+$$
 
-[Volver al contenido](#contenido)
+### 3. Función de transferencia del sistema controlado
 
----
+Sustituyendo $K(s)$ y $G_{caso}(s)$ en $T(s)$:
 
-<a id="python"></a>
-## Reproducción en Python
+$$
+T(s)=\frac{K(s)G_{caso}(s)}{1+K(s)G_{caso}(s)}
+=\frac{(0.021475\,s+42\,258.77)(0.1\,s+0.75)}{s\,(1.1\,s+1)+(0.021475\,s+42\,258.77)(0.1\,s+0.75)}.
+$$
 
-La implementación en Python, ejecutada mediante **Visual Studio Code**, permite comprobar los resultados de MATLAB/Simulink con una segunda herramienta computacional. Debe contener los siguientes apartados:
+Desarrollando los productos:
 
-1. Definición del vector temporal ($0\le t\le10\,\mathrm{s}$, $\Delta t=10^{-3}\,\mathrm{s}$).
-2. Construcción de la señal de entrada (pulso de $1\,\mathrm{V}$ y $1\,\mathrm{s}$).
-3. Definición de las funciones de transferencia del control y del caso.
-4. Cálculo de los polos de ambos modelos.
-5. Definición del controlador con las ganancias $k_P$, $k_I$ y $k_D$ obtenidas con *Tune*.
-6. Construcción del sistema del caso en lazo cerrado.
-7. Simulación de la respuesta forzada.
-8. Generación y almacenamiento de las figuras.
+$$
+T(s)=\frac{0.0021475\,s^{2}+4225.893\,s+31\,694.08}{1.1021475\,s^{2}+4226.893\,s+31\,694.08}
+=\frac{0.0019484\,s^{2}+3834.236\,s+28\,756.66}{s^{2}+3835.143\,s+28\,756.66}.
+$$
 
-Las respuestas de Python se comparan con las de MATLAB/Simulink **bajo las mismas entradas, condiciones iniciales y parámetros**.
+La función de transferencia completa del sistema controlado, desde la fuerza de entrada $F(s)$ hasta la salida del caso con PID, incluye además la planta del control que genera la referencia:
 
-> **Pendiente:** agregar `musculoesqueletico.py` y las figuras generadas (`Python.pdf`, nombre sugerido).
+$$
+\boxed{\frac{F_{s,caso}^{PID}(s)}{F(s)}=T(s)\,G_{control}(s)=\frac{0.0019484\,s^{2}+3834.236\,s+28\,756.66}{s^{2}+3835.143\,s+28\,756.66}\cdot\frac{0.001\,s+0.75}{0.011\,s+1}.}
+$$
+
+Propiedades de $T(s)$:
+
+| Característica | Valor |
+|---|---|
+| Polos | $-3827.63$ y $-7.513$ |
+| Ceros | $-7.5$ y $-1.97\times10^{6}$ |
+| Ganancia en estado estacionario $T(0)$ | $1$ |
+
+- $T(0)=1$: gracias a la acción integral, el caso alcanza sin error el valor de la referencia ante una entrada constante.
+- El polo lento de $T(s)$ ($-7.513$) coincide casi con el cero del caso ($-7.5$), por lo que prácticamente se cancelan. La dinámica dominante pasa a ser la del polo rápido ($-3827.63$), con constante de tiempo de $\approx0.26\,\mathrm{ms}$, en lugar de los $1.1\,\mathrm{s}$ del caso en lazo abierto.
+- Los dos polos son reales y negativos, por lo que el sistema controlado es estable.
 
 [Volver al contenido](#contenido)
 
@@ -593,12 +606,12 @@ Las respuestas permiten contrastar **entrada, control, caso en lazo abierto y ca
 
 - **Azul:** entrada aplicada, $F(t)$.
 - **Amarillo:** respuesta del control (individuo sano), $F_s(t)$.
-- **Rojo/magenta:** respuesta del caso (atrofia), $F_s(t)$.
-- **Morado punteado:** respuesta del sistema con PID.
+- **Rojo/magenta:** respuesta del caso (atrofia) en lazo abierto, $F_s(t)$.
+- **Morado punteado:** respuesta del caso con PID.
 
 ### Respuesta en lazo abierto ante el pulso de 1 V y 1 s
 
-Valores obtenidos de la función de transferencia $G(s)$ de cada condición con el pulso unitario que inicia en $t=1\,\mathrm{s}$:
+Valores obtenidos de las funciones de transferencia con el pulso unitario que inicia en $t=1\,\mathrm{s}$:
 
 | Instante | Control ($\tau=11\,\mathrm{ms}$) | Caso ($\tau=1.1\,\mathrm{s}$) |
 |---|---:|---:|
@@ -607,31 +620,35 @@ Valores obtenidos de la función de transferencia $G(s)$ de cada condición con 
 | Valor inmediatamente después de bajar el pulso | $\approx 0.66\ \mathrm{V}$ | $\approx 0.39\ \mathrm{V}$ |
 | Regreso a cero | $\approx 44\ \mathrm{ms}$ | $\approx 4.4\ \mathrm{s}$ |
 
+### Efecto del controlador
+
+Diferencia entre la respuesta de referencia (control) y la del caso, sin y con PID:
+
+| Métrica | Caso en lazo abierto | Caso con PID |
+|---|---:|---:|
+| Error máximo $\lvert x_{control}-x_{caso}\rvert$ | $0.62\ \mathrm{V}$ | $0.089\ \mathrm{V}$ (en el flanco de bajada, $t=2\,\mathrm{s}$) |
+| Error máximo durante la meseta del pulso ($1.1<t<2\,\mathrm{s}$) | $\approx 0.60\ \mathrm{V}$ | $0.0007\ \mathrm{V}$ |
+| Error máximo para $t>2.5\,\mathrm{s}$ | $\approx 0.25\ \mathrm{V}$ | $3\times10^{-5}\ \mathrm{V}$ |
+| Integral del error cuadrático $\int e^2\,dt$ | $0.275$ | $5.2\times10^{-6}$ |
+
+Con el PID, la salida del caso sigue prácticamente la misma curva que el control. El único error apreciable aparece en el instante en que la referencia cae de forma instantánea ($t=2\,\mathrm{s}$), que el controlador corrige en unos milisegundos.
+
 ### Archivos de resultados
 
-| Representación | MATLAB/Simulink | Python |
-|---|---|---|
-| Modelo de Simulink (control, caso y PID) | [`Simulink_matlab.pdf`](Simulink_matlab.pdf) | — |
-| Modelo de EDO (control, caso y PID de Simulink) | [`EDOsys_matlab.pdf`](EDOsys_matlab.pdf) | — |
+| Representación | Archivo |
+|---|---|
+| Modelo de Simulink (control, caso y PID) | [`Simulink_matlab.pdf`](Simulink_matlab.pdf) |
+| Modelo de EDO (control, caso y PID de Simulink) | [`EDOsys_matlab.pdf`](EDOsys_matlab.pdf) |
 
-Los enlaces anteriores funcionarán cuando los archivos estén incluidos en la raíz del repositorio; si se organizan por carpetas, deberán ajustarse las rutas relativas del README. Los PDF se enlazan para su consulta, dado que GitHub no los presenta como imágenes incrustadas convencionales.
+Los PDF se enlazan para su consulta, dado que GitHub no los presenta como imágenes incrustadas convencionales.
 
-### Aspectos para discutir
-
-- Coincidencia entre las representaciones por ecuaciones, función de transferencia, circuito equivalente y EDO integrada en MATLAB.
-- Efecto del incremento de $R$ sobre la velocidad de respuesta, con ganancia final constante.
-- Efecto del controlador sobre la amplitud, la velocidad de respuesta, el amortiguamiento y la diferencia entre el caso y el control.
-- Consistencia entre las figuras de MATLAB y Python.
-- Limitaciones del modelo musculoesquelético simplificado.
-
-### Interpretación de resultados
+### Discusión
 
 - **Efecto de $R$.** El caso de atrofia se modela solo aumentando $R$: el polo pasa de $-90.9$ a $-0.909$ y se conserva $G(0)=0.75$. El caso llega al mismo valor final que el control, pero 100 veces más lento. Ante un pulso de $1\,\mathrm{s}$, el control alcanza su meseta y el caso no.
-- **Consistencia entre representaciones.** La función de transferencia, el modelo de Simulink y la integración por Euler describen la misma dinámica de primer orden. Con $\Delta t=1\,\mathrm{ms}$ el método de Euler es estable en ambos casos (el más exigente es el control, con $\Delta t/\tau\approx0.09$).
+- **Consistencia entre representaciones.** La función de transferencia de Simulink y la integración por Euler describen la misma dinámica de primer orden. Con $\Delta t=1\,\mathrm{ms}$ el método de Euler es estable en ambos casos (el más exigente es el control, con $\Delta t/\tau\approx0.09$).
 - **Salto instantáneo.** Como el numerador y el denominador de $G(s)$ son del mismo grado, la salida salta de forma inmediata a $C_s/(C_p+C_s)\approx0.09$ al subir o bajar la entrada.
-- **Controlador.** Con $k_D=0$, el PID sintonizado se comporta como PI: la acción integral reduce el error entre el caso y la referencia sana.
-
-> **Pendiente:** completar con la comparación cuantitativa del lazo cerrado (amplitud, velocidad, amortiguamiento y error residual entre $x_{caso}$ y $x_{control}$) y la verificación con Simscape y Python.
+- **Controlador.** El PID sintonizado, que con $k_D=0$ es un PI, cancela casi por completo la lentitud del caso: el error cuadrático acumulado se reduce en cinco órdenes de magnitud y la salida del caso reproduce la del individuo sano.
+- **Alcance.** El controlador se diseñó con fines académicos y de simulación; no constituye una estrategia terapéutica para la atrofia muscular.
 
 [Volver al contenido](#contenido)
 
@@ -647,25 +664,20 @@ flowchart TD
     C --> D[Funcion de transferencia]
     C --> E[EDO de primer orden]
     D --> F[Polo, estabilidad y error]
-    E --> G[Simulink: ecuaciones]
-    D --> H[Simulink: funcion de transferencia]
-    B --> I[Simscape Electrical: circuito]
-    G --> J[Lazo abierto: control y caso]
-    H --> J
-    I --> J
-    J --> K[PID sobre el error control - caso]
-    K --> L[Sintonizacion y respuesta en lazo cerrado]
-    D --> M[Python: simulacion independiente]
-    L --> M
-    J --> N[Verificacion cruzada]
-    L --> N
+    D --> G[Simulink: funciones de transferencia]
+    E --> H[MATLAB: EDO con Euler]
+    G --> I[Lazo abierto: control y caso]
+    H --> I
+    I --> J[PID sobre el error control - caso]
+    J --> K[Sintonizacion y respuesta en lazo cerrado]
+    I --> L[Verificacion cruzada]
+    K --> L
+    B --> M[Diagrama biologico en BioRender]
+    L --> N[README, figuras y evidencias en GitHub]
     M --> N
-    B --> O[Diagrama biologico en BioRender]
-    N --> P[README, figuras y evidencias en GitHub]
-    O --> P
 ```
 
-El procedimiento integra la formulación analítica y la experimentación *in silico* con una verificación cruzada entre herramientas.
+El procedimiento integra la formulación analítica y la experimentación *in silico* con una verificación cruzada entre Simulink y MATLAB.
 
 [Volver al contenido](#contenido)
 
@@ -685,32 +697,26 @@ La práctica sigue una secuencia de **modelado, simulación, control y documenta
 - [x] Expresar el modelo como EDO de primer orden.
 - [x] Calcular el error en estado estacionario.
 - [x] Calcular los polos y analizar la estabilidad.
-- [ ] Representar los polos en el plano complejo.
 
 ### Etapa 2. Simulación del sistema
 
-- [x] Reproducir el modelo por ecuaciones en Simulink.
-- [x] Reproducir la función de transferencia en Simulink.
-- [ ] Reproducir el circuito equivalente en Simscape Electrical.
+- [x] Implementar las funciones de transferencia del control y del caso en Simulink.
+- [x] Implementar el modelo de EDO en MATLAB.
 - [x] Obtener la respuesta en lazo abierto del control y del caso.
-- [ ] Verificar la consistencia entre las representaciones.
 
 ### Etapa 3. Diseño y comprobación del controlador
 
 - [x] Construir el sistema de retroalimentación con PID sobre el caso.
 - [x] Sintonizar y registrar $k_P$, $k_I$ y $k_D$.
-- [ ] Analizar la respuesta en lazo cerrado.
+- [x] Obtener la función de transferencia del sistema controlado.
+- [x] Analizar la respuesta en lazo cerrado.
 - [x] Desarrollar el cuaderno de MATLAB y la función de graficación con exportación a PDF.
-- [ ] Implementar el control y el caso en Python con las mismas ganancias.
-- [ ] Realizar la verificación cruzada de los resultados.
 
 ### Etapa 4. Diagrama biológico y documentación
 
-- [x] Elaborar el diagrama biológico en BioRender (bíceps femoral).
+- [x] Elaborar el diagrama biológico en BioRender.
 - [x] Relacionar cada elemento del diagrama con el modelo mecánico y su equivalente eléctrico.
-- [ ] Incorporar figuras y capturas de las simulaciones.
-- [ ] Redactar las conclusiones.
-- [ ] Publicar los archivos y un `CITATION.cff` correctamente identificados.
+- [x] Documentar la práctica en este README.
 
 [Volver al contenido](#contenido)
 
@@ -719,27 +725,16 @@ La práctica sigue una secuencia de **modelado, simulación, control y documenta
 <a id="estructura"></a>
 ## Estructura del repositorio
 
-Una organización **sugerida** para la entrega, compatible con los archivos solicitados, es:
-
 ```text
 .
-├── README.md                      # Reporte y guía de reproducción
-├── CITATION.cff                   # Datos de citación del repositorio
-├── Apellido_NoControl.mlx         # Cuaderno MATLAB del estudiante
-├── Apellido_NoControl.pdf         # Exportación del cuaderno
-├── MPSFP3NFGA.slx                 # Modelo Simulink
-├── MPSFP3NFGA_simscape.slx        # Circuito equivalente en Simscape Electrical
-├── musculoesqueletico.py          # Implementación Python
-├── Simulink_matlab.pdf            # Figura del modelo de Simulink
-├── EDOsys_matlab.pdf              # Figura del modelo de EDO
-├── Python.pdf                     # Figura de Python
-├── controlador_pid.png            # Captura de sintonización (nombre sugerido)
-├── diagrama_biologico.png         # Diagrama de BioRender
-├── apuntes/                       # Cálculos manuscritos de la superposición
-└── evidencias/                    # Capturas adicionales de las simulaciones
+├── README.md                  # Reporte de la práctica
+├── MPSFP3NFGA.slx             # Modelo Simulink
+├── Simulink_matlab.pdf        # Figura del modelo de Simulink
+├── EDOsys_matlab.pdf          # Figura del modelo de EDO
+└── diagrama_biologico.png     # Diagrama biológico (BioRender)
 ```
 
-**Criterio de nombres:** `MPSFP3NFGA.slx`, `Simulink_matlab.pdf` y `EDOsys_matlab.pdf` corresponden a los archivos y nombres que genera el código de la práctica. Los demás nombres son **propuestas organizativas**. Si se utilizan otros nombres o subcarpetas, actualizar las rutas del README y no eliminar evidencias requeridas.
+El cuaderno de MATLAB (`.mlx`) y su exportación en PDF se almacenan en la raíz del repositorio junto con los archivos anteriores.
 
 [Volver al contenido](#contenido)
 
@@ -748,15 +743,9 @@ Una organización **sugerida** para la entrega, compatible con los archivos soli
 <a id="requisitos"></a>
 ## Requisitos
 
-### Software
-
 - **MATLAB** y **Simulink**, con el modelo `MPSFP3NFGA.slx` y el cuaderno de la práctica.
-- **Simscape Electrical**, para construir el circuito equivalente.
 - Herramientas de Simulink para la sintonización del bloque **PID Controller**.
-- **Python** y **Visual Studio Code** para la implementación complementaria.
-- **Git y GitHub** para organizar y presentar el repositorio de la práctica.
-
-Para el ejemplo de verificación de la sección de análisis, que utiliza `tf` y `pole`, es necesario disponer de **Control System Toolbox**.
+- **Control System Toolbox**, para el ejemplo de verificación que utiliza `tf` y `pole`.
 
 [Volver al contenido](#contenido)
 
@@ -768,34 +757,23 @@ Para el ejemplo de verificación de la sección de análisis, que utiliza `tf` y
 ### Secuencia de reproducción
 
 1. Consultar el [repositorio general de la asignatura](https://github.com/DrPaulValle/MSF-IBF1020) y descargar los archivos proporcionados para la práctica.
-2. Verificar la topología del circuito equivalente, los valores de $\alpha$, $R$, $C_s$, $C_p$ y las condiciones iniciales.
-3. Derivar el modelo por superposición y completar el análisis del polo y del error en estado estacionario.
-4. Ejecutar los modelos de Simulink y Simscape para el control y el caso.
-5. Sintonizar el PID sobre el caso y registrar las ganancias y la evidencia de la sintonización.
-6. Ejecutar el cuaderno MATLAB y exportar las figuras en PDF.
-7. Sustituir las ganancias en Python, reproducir las señales y exportar las figuras.
-8. Comparar los resultados de MATLAB, Simulink, Simscape y Python, y explicar las diferencias.
-9. Elaborar el diagrama biológico y relacionarlo con el modelo mecánico y el circuito equivalente.
-10. Completar este README con las evidencias propias.
-11. Publicar el repositorio con sus fuentes y `CITATION.cff`.
+2. Verificar los valores de $\alpha$, $R$, $C_s$, $C_p$ y las condiciones iniciales.
+3. Abrir `MPSFP3NFGA.slx` y comprobar los parámetros de las funciones de transferencia, del pulso y del bloque `PID Controller`.
+4. Ejecutar el cuaderno de MATLAB para simular el modelo, generar el modelo de EDO y exportar las figuras en PDF.
+5. Comparar las respuestas del control, del caso y del caso con PID en las dos figuras.
 
-### Resultados mínimos esperados
+### Entregables
 
-| Entregable | Evidencia solicitada |
+| Entregable | Evidencia |
 |---|---|
-| Análisis del modelo mecánico | Identificación y función de cada elemento |
-| Analogía electromecánica | Circuito equivalente y correspondencias |
+| Análisis del modelo mecánico | Elementos del modelo y su función |
+| Analogía electromecánica | Correspondencias mecánico–eléctrico y diagrama biológico |
 | Análisis matemático | Superposición, función de transferencia, EDO, polo y error |
-| Simulaciones | Modelo `.slx`, circuito en Simscape y respuestas en lazo abierto y cerrado |
-| Sintonización | Ganancias PID y captura de la sintonización |
-| MATLAB | Cuaderno `.mlx`, exportación `.pdf` y figuras |
-| Python | Código `.py` y figuras |
-| Diagrama biológico | Figura de BioRender con elementos relacionados al modelo |
-| Documentación | `README.md`, `CITATION.cff` e interpretación de los resultados |
-
-### Criterios de presentación académica
-
-En el README final debe distinguirse entre **resultados de referencia reproducidos**, **resultados propios** y **modificaciones realizadas por el estudiante**. La ejecución de scripts y la generación de figuras, por sí solas, no sustituyen la discusión del comportamiento mecánico, matemático y eléctrico del sistema.
+| Simulación | Modelo `MPSFP3NFGA.slx` y respuestas en lazo abierto y cerrado |
+| Sintonización | Ganancias $k_P$, $k_I$, $k_D$ y función de transferencia del sistema controlado |
+| MATLAB | Cuaderno `.mlx` y figuras `Simulink_matlab.pdf` y `EDOsys_matlab.pdf` |
+| Diagrama biológico | `diagrama_biologico.png` |
+| Documentación | `README.md` |
 
 [Volver al contenido](#contenido)
 
@@ -822,4 +800,4 @@ En el README final debe distinguirse entre **resultados de referencia reproducid
 
 ## Uso académico
 
-Este repositorio se utiliza como evidencia de la práctica **Modelado y control del sistema musculoesquelético** de la asignatura Modelado de Sistemas Fisiológicos. El procedimiento se fundamenta en los materiales proporcionados por la asignatura. Su finalidad es desarrollar habilidades de modelado, simulación, control y documentación técnica; la estrategia de control tiene propósitos exclusivamente académicos y de simulación, y cualquier cambio de parámetros, estructura del controlador o procedimiento debe identificarse y justificarse.
+Este repositorio se utiliza como evidencia de la práctica **Modelado y control del sistema musculoesquelético** de la asignatura Modelado de Sistemas Fisiológicos. El procedimiento se fundamenta en los materiales proporcionados por la asignatura. Su finalidad es desarrollar habilidades de modelado, simulación, control y documentación técnica; la estrategia de control tiene propósitos exclusivamente académicos y de simulación.
