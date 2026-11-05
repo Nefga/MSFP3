@@ -1,6 +1,6 @@
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=USUARIO/REPOSITORIO)
 
-# Práctica Tres — Modelado y control del sistema musculoesquelético
+# MSFP3: Modelado y control del sistema musculoesquelético
 
 Repositorio académico de la asignatura **Modelado de Sistemas Fisiológicos**, correspondiente al programa de **Ingeniería Biomédica** del Tecnológico Nacional de México / Instituto Tecnológico de Tijuana. Esta práctica integra modelado mecánico, analogías electromecánicas, superposición de circuitos, análisis temporal y de estabilidad, diseño de controladores PID y simulación computacional *in silico*.
 
@@ -130,6 +130,27 @@ $$
 | $x(t)$ | Carga / corriente en la rama de $C_p$ | Desplazamiento total |
 | $x_1(t)$ | Carga / corriente en la rama de $C_s$ | Deformación del tendón |
 | $F_s(t)$ | Voltaje de salida | Fuerza transmitida |
+
+### Diagrama biológico
+
+![Diagrama biológico del modelo musculoesquelético](diagrama_biologico.png)
+
+*Figura elaborada en BioRender. A la derecha se muestra el modelo mecánico equivalente; a la izquierda se ubica cada elemento del modelo en el músculo y su tendón.*
+
+Cada elemento del diagrama se relaciona con el modelo mecánico y con su equivalente eléctrico de la siguiente forma:
+
+| Elemento del diagrama | Modelo mecánico | Equivalente eléctrico |
+|---|---|---|
+| Fuerza generada $F(t)$ | Fuerza de entrada del modelo | Fuente de voltaje $F(t)$ |
+| Elemento contráctil muscular $F_0$ | Fuerza activa $F_0(t)=\alpha F(t)$ | Fuente de voltaje $\alpha F(t)$ |
+| Elemento viscoso muscular $R$ | Amortiguador | Resistencia $R$ |
+| Estructuras elásticas musculares $C_p$ | Resorte en paralelo | Capacitancia $C_p$ |
+| Tendón $C_s$ | Resorte en serie | Capacitancia $C_s$ |
+| Desplazamiento del músculo $x(t)-x_1(t)$ | Deformación del amortiguador | Carga asociada a $R$ |
+| Desplazamiento del tendón $x_1(t)$ | Deformación de $C_s$ | Carga asociada a $C_s$ |
+| Desplazamiento total $x(t)$ | Desplazamiento de $C_p$ | Carga asociada a $C_p$ |
+
+El desplazamiento total se reparte entre el músculo y el tendón: $x(t)=\left[x(t)-x_1(t)\right]+x_1(t)$.
 
 ### Analogía fuerza–voltaje
 
@@ -610,7 +631,7 @@ Los enlaces anteriores funcionarán cuando los archivos estén incluidos en la r
 - **Salto instantáneo.** Como el numerador y el denominador de $G(s)$ son del mismo grado, la salida salta de forma inmediata a $C_s/(C_p+C_s)\approx0.09$ al subir o bajar la entrada.
 - **Controlador.** Con $k_D=0$, el PID sintonizado se comporta como PI: la acción integral reduce el error entre el caso y la referencia sana.
 
-> **Pendiente:** completar con la comparación cuantitativa del lazo cerrado (amplitud, velocidad, amortiguamiento y error residual entre $x_{caso}$ y $x_{control}$), la verificación con Simscape y Python, y el diagrama biológico.
+> **Pendiente:** completar con la comparación cuantitativa del lazo cerrado (amplitud, velocidad, amortiguamiento y error residual entre $x_{caso}$ y $x_{control}$) y la verificación con Simscape y Python.
 
 [Volver al contenido](#contenido)
 
@@ -685,8 +706,8 @@ La práctica sigue una secuencia de **modelado, simulación, control y documenta
 
 ### Etapa 4. Diagrama biológico y documentación
 
-- [ ] Elaborar el diagrama biológico en BioRender (bíceps femoral).
-- [ ] Relacionar cada elemento del diagrama con el modelo mecánico y su equivalente eléctrico.
+- [x] Elaborar el diagrama biológico en BioRender (bíceps femoral).
+- [x] Relacionar cada elemento del diagrama con el modelo mecánico y su equivalente eléctrico.
 - [ ] Incorporar figuras y capturas de las simulaciones.
 - [ ] Redactar las conclusiones.
 - [ ] Publicar los archivos y un `CITATION.cff` correctamente identificados.
