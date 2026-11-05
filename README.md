@@ -297,8 +297,9 @@ Definiendo la variable auxiliar $x(t)$ como la salida del filtro de primer orden
 
 $$
 \begin{aligned}
-\dot{x}(t)&=\frac{F(t)-x(t)}{R\,(C_p+C_s)},\[4pt]
-F_s(t)&=\frac{C_s}{C_p+C_s}\,F(t)+\left(1-\alpha-\frac{C_s}{C_p+C_s}\right)x(t).
+\dot{x}(t) &= \frac{F(t)-x(t)}{R\,(C_p+C_s)}, \\[4pt]
+F_s(t) &= \frac{C_s}{C_p+C_s}\,F(t)
++ \left(1-\alpha-\frac{C_s}{C_p+C_s}\right)x(t).
 \end{aligned}
 $$
 
